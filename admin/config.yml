@@ -1,0 +1,329 @@
+# ============================================================
+# Sveltia CMS Konfiguration – KGV Rudolphia e.V. 1902
+# ============================================================
+# WICHTIG: Ersetze "DEIN-GITHUB-USERNAME" mit deinem echten
+# GitHub-Benutzernamen (kleingeschrieben).
+# Das Repository muss "kgv-rudolphia" heißen und PUBLIC sein.
+# ============================================================
+
+backend:
+  name: github
+  repo: DEIN-GITHUB-USERNAME/kgv-rudolphia
+  branch: main
+  auth_type: pkce
+  app_id: ""  # leer lassen – wird über Personal Access Token verwendet
+
+# Medien (Bilder) werden in diesem Ordner gespeichert
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+# Sprache der CMS-Oberfläche
+locale: "de"
+
+# ============================================================
+# INHALTSSAMMLUNGEN
+# Jede Sammlung = ein Bereich den du im CMS bearbeiten kannst
+# ============================================================
+
+collections:
+
+  # ----------------------------------------------------------
+  # 1. STARTSEITE
+  # ----------------------------------------------------------
+  - name: "startseite"
+    label: "🏠 Startseite"
+    files:
+      - name: "start"
+        label: "Startseite bearbeiten"
+        file: "content/startseite.json"
+        fields:
+          - label: "Hero-Titel (Zeile 1)"
+            name: "hero_titel_1"
+            widget: "string"
+            default: "Willkommen im"
+          - label: "Hero-Titel (Zeile 2 – grün)"
+            name: "hero_titel_2"
+            widget: "string"
+            default: "KGV Rudolphia"
+          - label: "Hero-Beschreibung"
+            name: "hero_text"
+            widget: "text"
+            default: "268 Parzellen, 464 Mitglieder – einer der ältesten und größten Kleingärtnervereine Dresdens."
+          - label: "Anzahl Parzellen"
+            name: "stat_parzellen"
+            widget: "number"
+            default: 268
+          - label: "Anzahl Mitglieder"
+            name: "stat_mitglieder"
+            widget: "number"
+            default: 464
+
+  # ----------------------------------------------------------
+  # 2. TERMINE & VERANSTALTUNGEN
+  # ----------------------------------------------------------
+  - name: "termine"
+    label: "📅 Termine & Veranstaltungen"
+    label_singular: "Termin"
+    folder: "content/termine"
+    create: true
+    slug: "{{jahr}}-{{monat}}-{{tag}}-{{slug}}"
+    summary: "{{title}} – {{datum}}"
+    fields:
+      - label: "Titel"
+        name: "title"
+        widget: "string"
+        hint: "z.B. Mitgliederversammlung"
+      - label: "Datum"
+        name: "datum"
+        widget: "datetime"
+        format: "DD.MM.YYYY"
+        date_format: "DD.MM.YYYY"
+        time_format: false
+        hint: "Datum der Veranstaltung"
+      - label: "Uhrzeit von"
+        name: "uhrzeit_von"
+        widget: "string"
+        hint: "z.B. 10:00"
+        required: false
+      - label: "Uhrzeit bis"
+        name: "uhrzeit_bis"
+        widget: "string"
+        hint: "z.B. 12:00"
+        required: false
+      - label: "Ort"
+        name: "ort"
+        widget: "string"
+        hint: "z.B. Vereinsheim Rudolphia"
+        required: false
+      - label: "Kategorie"
+        name: "kategorie"
+        widget: "select"
+        options:
+          - { label: "Versammlung", value: "versammlung" }
+          - { label: "Fest & Feier", value: "fest" }
+          - { label: "Arbeitseinsatz", value: "arbeit" }
+          - { label: "Sport & Spiel", value: "sport" }
+          - { label: "Tauschbörse", value: "tausch" }
+          - { label: "Sonstiges", value: "sonstiges" }
+        default: "sonstiges"
+      - label: "Beschreibung"
+        name: "beschreibung"
+        widget: "markdown"
+        required: false
+        hint: "Ausführliche Beschreibung (optional)"
+      - label: "Anmeldung erforderlich?"
+        name: "anmeldung"
+        widget: "boolean"
+        default: false
+      - label: "Kontakt-E-Mail für Anmeldung"
+        name: "kontakt_email"
+        widget: "string"
+        required: false
+
+  # ----------------------------------------------------------
+  # 3. NEUIGKEITEN / NEWS
+  # ----------------------------------------------------------
+  - name: "neuigkeiten"
+    label: "📰 Neuigkeiten"
+    label_singular: "Neuigkeit"
+    folder: "content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} ({{date}})"
+    fields:
+      - label: "Titel"
+        name: "title"
+        widget: "string"
+      - label: "Datum"
+        name: "date"
+        widget: "datetime"
+        format: "DD.MM.YYYY"
+        date_format: "DD.MM.YYYY"
+        time_format: false
+      - label: "Kategorie"
+        name: "kategorie"
+        widget: "select"
+        options:
+          - { label: "Veranstaltung", value: "Veranstaltung" }
+          - { label: "Fest", value: "Fest" }
+          - { label: "Information", value: "Information" }
+          - { label: "Garten-Tipp", value: "Garten-Tipp" }
+        default: "Information"
+      - label: "Kurzbeschreibung (für Karte)"
+        name: "excerpt"
+        widget: "text"
+        hint: "Wird auf der Startseite angezeigt (max. 2–3 Sätze)"
+      - label: "Vollständiger Text"
+        name: "body"
+        widget: "markdown"
+        required: false
+      - label: "Titelbild"
+        name: "bild"
+        widget: "image"
+        required: false
+        hint: "Bild für die News-Karte (empfohlen: 800×450 px)"
+
+  # ----------------------------------------------------------
+  # 4. FREIE GÄRTEN
+  # ----------------------------------------------------------
+  - name: "gaerten"
+    label: "🌱 Freie Gärten"
+    label_singular: "Garten"
+    folder: "content/gaerten"
+    create: true
+    slug: "garten-{{parzellen_nr}}"
+    summary: "Parzelle {{parzellen_nr}} – {{status}}"
+    fields:
+      - label: "Parzellen-Nummer"
+        name: "parzellen_nr"
+        widget: "string"
+        hint: "z.B. 47 oder 47a"
+      - label: "Gartenweg"
+        name: "gartenweg"
+        widget: "string"
+        hint: "z.B. Weg 3"
+        required: false
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options:
+          - { label: "Verfügbar", value: "verfuegbar" }
+          - { label: "Vergeben", value: "vergeben" }
+          - { label: "In Bearbeitung", value: "bearbeitung" }
+        default: "verfuegbar"
+      - label: "Fläche (m²)"
+        name: "flaeche"
+        widget: "number"
+        required: false
+      - label: "Besonderheiten"
+        name: "beschreibung"
+        widget: "text"
+        required: false
+        hint: "z.B. sonnige Lage, Brunnen vorhanden"
+      - label: "Foto"
+        name: "foto"
+        widget: "image"
+        required: false
+
+  # ----------------------------------------------------------
+  # 5. DOKUMENTE & FORMULARE
+  # ----------------------------------------------------------
+  - name: "dokumente"
+    label: "📄 Dokumente & Formulare"
+    label_singular: "Dokument"
+    folder: "content/dokumente"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    fields:
+      - label: "Name des Dokuments"
+        name: "name"
+        widget: "string"
+        hint: "z.B. Gartenordnung 2025"
+      - label: "Kategorie"
+        name: "kategorie"
+        widget: "select"
+        options:
+          - { label: "Ordnungen & Satzungen", value: "ordnung" }
+          - { label: "Formulare & Anträge", value: "formular" }
+          - { label: "Pläne & Karten", value: "plan" }
+          - { label: "Richtlinien", value: "richtlinie" }
+        default: "formular"
+      - label: "Datei hochladen (PDF)"
+        name: "datei"
+        widget: "file"
+        hint: "PDF-Dokument hochladen"
+        media_library:
+          config:
+            multiple: false
+      - label: "Kurze Beschreibung"
+        name: "beschreibung"
+        widget: "text"
+        required: false
+      - label: "Stand / Version"
+        name: "stand"
+        widget: "string"
+        required: false
+        hint: "z.B. Stand 2025"
+
+  # ----------------------------------------------------------
+  # 6. TAUSCHBÖRSE
+  # ----------------------------------------------------------
+  - name: "tauschboerse"
+    label: "🔄 Tauschbörse"
+    label_singular: "Anzeige"
+    folder: "content/tausch"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{typ}}: {{title}}"
+    fields:
+      - label: "Typ"
+        name: "typ"
+        widget: "select"
+        options:
+          - { label: "Ich biete", value: "biete" }
+          - { label: "Ich suche", value: "suche" }
+      - label: "Was wird angeboten / gesucht?"
+        name: "title"
+        widget: "string"
+        hint: "z.B. Tomatensetzlinge, Zucchini, Werkzeug"
+      - label: "Beschreibung"
+        name: "beschreibung"
+        widget: "text"
+        required: false
+      - label: "Name"
+        name: "name"
+        widget: "string"
+      - label: "Gartenweg, Nr."
+        name: "gartenweg"
+        widget: "string"
+        required: false
+      - label: "Kontakt (Telefon oder E-Mail)"
+        name: "kontakt"
+        widget: "string"
+      - label: "Foto"
+        name: "foto"
+        widget: "image"
+        required: false
+      - label: "Aktiv (Anzeige sichtbar?)"
+        name: "aktiv"
+        widget: "boolean"
+        default: true
+
+  # ----------------------------------------------------------
+  # 7. SEITEN (Über uns, Gärtnern etc.)
+  # ----------------------------------------------------------
+  - name: "seiten"
+    label: "📝 Seiteninhalte"
+    files:
+
+      - name: "ueber_uns"
+        label: "Über uns"
+        file: "content/seiten/ueber-uns.json"
+        fields:
+          - label: "Einleitungstext"
+            name: "einleitung"
+            widget: "markdown"
+          - label: "Vorsitzende / Vorstand (Name)"
+            name: "vorsitzende_name"
+            widget: "string"
+            default: "Dr. Doreen Forßbohm"
+          - label: "Stellv. Vorsitzende (Name)"
+            name: "stellv_name"
+            widget: "string"
+            default: "Christina Wittich"
+
+      - name: "gaertnern"
+        label: "Gärtnern"
+        file: "content/seiten/gaertnern.json"
+        fields:
+          - label: "Einleitungstext (Freie Gärten)"
+            name: "einleitung_gaerten"
+            widget: "markdown"
+          - label: "Mindest-Pflichtstunden pro Jahr"
+            name: "pflichtstunden"
+            widget: "number"
+            default: 4
+          - label: "Einleitungstext (Arbeitseinsätze)"
+            name: "einleitung_arbeit"
+            widget: "markdown"
