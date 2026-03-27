@@ -8,7 +8,7 @@
 
 backend:
   name: github
-  repo: DEIN-GITHUB-USERNAME/kgv-rudolphia
+  repo: KGVChristina/kgv-rudolphia
   branch: main
   auth_type: pkce
   app_id: ""  # leer lassen – wird über Personal Access Token verwendet
